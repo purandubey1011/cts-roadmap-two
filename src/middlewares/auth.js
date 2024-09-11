@@ -8,21 +8,32 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
     token = req.cookies.jwt;
 
     if (!token) {
+        console.error("No token found in cookies");
         return next(
-            new ErrorHandler("Please login in to access the resource", 401)
+            new ErrorHandler("Please login to access the resource", 401)
         );
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Decoded user ID:", decoded.userId);
 
-    if (!user) {
+        const user = await User.findById(decoded.userId).select('-password');
+
+        if (!user) {
+            console.error("User not found for ID:", decoded.userId);
+            return next(
+                new ErrorHandler("User not found", 404)
+            );
+        }
+
+        req.user = user;
+        req.id = user;
+        next();
+    } catch (error) {
+        console.error("Error verifying token:", error);
         return next(
-            new ErrorHandler("User not found", 404)
+            new ErrorHandler("Unauthorized access", 401)
         );
     }
-
-    req.user = user;
-    req.id = user;
-    next();
-}); 
+});
