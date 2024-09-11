@@ -46,9 +46,15 @@ exports.signup = catchAsyncErrors(async (req, res, next) => {
         avatar: avatar,
         password,
     })
-    // await user.save()
-
-    sendtoken(user,200,res)
+    if (user) {
+        sendtoken(res,user._id)
+    
+        res.status(201).json({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+        });
+      }
 })
 
 // signin student 
@@ -60,15 +66,25 @@ exports.signin = catchAsyncErrors(async (req, res, next) => {
     if(!user) return next(new ErorrHandler("User not found with this email address", 404))
     
     // if password is incorrect
-    const isMatch = await user.comparepassword(req.body.password)
-    if(!isMatch) return next(new ErorrHandler("Incorrect password", 400))
+    // const isMatch = await user.comparepassword(req.body.password)
+    // if(!isMatch) return next(new ErorrHandler("Incorrect password", 400))
     
-    sendtoken(user,200,res)     
+    if (user && (await user.matchPassword(req.body.password))) {
+        sendtoken(res, user._id);
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+          });
+    }     
 })
 
 // signout student 
 exports.signout = catchAsyncErrors(async (req, res, next) => {
-    res.clearCookie("token");
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0),
+      });
     res.json({ message: "Successfully signout!" });
 })
 
@@ -110,7 +126,7 @@ exports.resetpassword = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findById(req.id).exec();
     user.password = req.body.password;
     await user.save();
-    sendtoken(user, 201, res);
+    sendtoken(res,user._id);
 });
 
 exports.usersendmail = catchAsyncErrors(async (req, res, next) => {

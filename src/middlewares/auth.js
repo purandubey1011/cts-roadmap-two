@@ -4,7 +4,9 @@ const { catchAsyncErrors } = require("./catchAsyncErrors");
 const User = require("../models/user.schema");
 
 exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
+    let token;
+
+    token = req.cookies.jwt;
 
     if (!token) {
         return next(
@@ -12,8 +14,8 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
         );
     }
 
-    const { id } = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(id);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('-password');
 
     if (!user) {
         return next(
@@ -22,6 +24,6 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
     }
 
     req.user = user;
-    req.id = id;
+    req.id = user;
     next();
 }); 
