@@ -5,7 +5,6 @@ const User = require("../models/user.schema");
 
 exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
     let token;
-
     token = req.cookies.jwt;
 
     if (!token) {
