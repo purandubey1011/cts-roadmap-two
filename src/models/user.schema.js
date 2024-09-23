@@ -114,6 +114,11 @@ let userSchema = new mongoose.Schema({
         type: String,
         default: "0",
     },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
 }, { timestamps: true });
 
 userSchema.pre('save', async function () {

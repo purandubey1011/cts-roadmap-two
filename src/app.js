@@ -3,6 +3,7 @@ require('dotenv').config({ path: './.env' });
 // import express
 let express = require("express");
 let app = express();
+const passport = require('./utils/passport.js');
 
 // use database
 require('./models/database.js').connectDatabase()
@@ -18,6 +19,9 @@ app.use(
         credentials: true,
     })
   );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // body parser
 app.use(express.json());
@@ -43,6 +47,8 @@ app.use(cookieparser());
 // express file-upload
 const fileupload = require("express-fileupload");
 app.use(fileupload());
+
+
     
 // index routes
 app.use('/api/v1/user/', require('./routes/index.routes.js'))

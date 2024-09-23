@@ -16,10 +16,25 @@ const {
     updateSocialMedia
 } = require("../controllers/index.controllers");
 const { isAuthenticated } = require("../middlewares/auth");
+const passport = require('passport');
 let router = express.Router();
 
 // home route
 router.route("/").get(homepage);
+
+// ****************************
+// google auth routes
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/signin' }),
+  (req, res) => {
+    // Successful authentication, redirect home.
+    res.redirect('/home');
+  }
+);
+// ****************************
 
 // signup
 router.route("/signup").post(signup);
