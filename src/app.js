@@ -26,20 +26,19 @@ app.use(express.urlencoded({ extended: false }));
 // session and cookie
 const session = require("express-session");
 const cookieparser = require("cookie-parser");
-
 app.use(
     session({
-        resave: false,
-        saveUninitialized: false,
+        resave: true,
+        saveUninitialized: true,
         secret: process.env.EXPRESS_SESSION_SECRET,
         cookie: {
             maxAge: 1000 * 60 * 60 * 24, // 1 day
-            sameSite: "Strict", // or "Lax" based on your requirements
-            secure: process.env.NODE_ENV == "production" && process.env.USE_HTTPS == "true", // ensure secure cookies in production
+            sameSite: "None", // Allow cross-site requests
+            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+            httpOnly: true, // Prevents JavaScript access to cookies
         },
     })
 );
-
 app.use(cookieparser());
 // express file-upload
 const fileupload = require("express-fileupload");

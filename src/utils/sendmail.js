@@ -20,7 +20,7 @@ exports.sendmail = (req, res, next, filepath, student) => {
         text: "Please find attached your roadmap.",
         attachments: [
             {
-                filename: `${req.id}.txt`, // Change the filename extension to .txt
+                filename: `${req.id}.txt`,
                 path: filepath
             }
         ]

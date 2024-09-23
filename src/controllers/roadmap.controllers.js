@@ -12,7 +12,7 @@ exports.getroadmap = catchAsyncErrors(async (req, res, next) => {
   let formdata = req.body;
 
   let prompt = `
-    *********************************
+    ***********
     personal Details:
 
     Full Name: ${formdata.fullname}
@@ -21,7 +21,7 @@ exports.getroadmap = catchAsyncErrors(async (req, res, next) => {
     City: ${formdata.city}
     Date of Birth: ${formdata.dateofbirth}
 
-     *********************************
+     ***********
     
     my Academics:      
 
@@ -55,7 +55,7 @@ exports.getroadmap = catchAsyncErrors(async (req, res, next) => {
     
     What is your long-term goal? - ${formdata.longTermGoal}
     
-    *********************************
+    ***********
 
     other Details:
     
@@ -71,31 +71,34 @@ exports.getroadmap = catchAsyncErrors(async (req, res, next) => {
 
     Interest Field Areas: ${formdata.interestField}
     
-    *********************************
+    ***********
 
     Activities/Extracurriculars:
-    
-    Skills you have: ${formdata.skills}
-
-    activity: ${formdata.activityType1}
-
-    Position / Role in the activity: ${formdata.workingProfile1}
-    
-    Organization/Company Name:${formdata.organizationName1}
-
-    description-${formdata.taskDescription1}
-
-    *********************************
     `;
+
+    formdata.activities.slice(1).forEach((activity, index) => {
+      prompt += `
+      Activity ${index + 1}:  
+    
+      Activity: ${activity.activityType}
+  
+      Position / Role in the activity: ${activity.workingProfile}
+      
+      Organization/Company Name: ${activity.organizationName}
+  
+      Description: ${activity.taskDescription}
+      
+      `;
+  });
 
   let roadmap = await getChatCompletion(prompt);
 
-  // *********************************************
+  // ***************
 
   // Create TXT of the roadmap
-  let { txtpath, txtname } = await txtCreater(`${formdata.fullname}-${Date.now()}`, `${roadmap}`, `${formdata.fullname}`,prompt);
+  let { txtpath, txtname } = await txtCreater(`${formdata.fullname}-${Date.now()}`, roadmap, formdata.fullname, prompt);
 
-  // *********************************************
+  // ***************
 
   // Save TXT in database and reference to user
   let pendingRoadmapData = await new PendingRoadmap({
@@ -116,5 +119,5 @@ exports.getroadmap = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: 'Roadmap has been generated and saved as TXT. Check your mail for the roadmap.',
     student: student.fullname
-  });
+  });
 });

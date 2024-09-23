@@ -8,7 +8,6 @@ const UpdatedRoadmap = require("../models/updated.roadmap.schema.js");
 
 exports.getallusers = catchAsyncErrors(async (req, res, next) => {
     const users = await User.find().populate('roadmaps').exec();
-    console.log(users);
     res.status(200).json({
         success: true,
         userlength: users.length,
