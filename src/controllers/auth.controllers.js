@@ -2,6 +2,7 @@ const { axios } = require("axios");
 const { oauth2Client } = require("../utils/googleConfig");
 const userSchema = require("../models/user.schema");
 const { sendtoken } = require("../utils/sendtoken");
+const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
 
 //testing page
 exports.google = catchAsyncErrors(async (req, res, next) => {
