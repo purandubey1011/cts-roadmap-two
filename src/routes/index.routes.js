@@ -16,7 +16,6 @@ const {
     updateSocialMedia
 } = require("../controllers/index.controllers");
 const { isAuthenticated } = require("../middlewares/auth");
-const passport = require("passport");
 let router = express.Router();
 
 // home route
@@ -60,22 +59,5 @@ router.route("/signout").post(isAuthenticated, signout);
 
 // route for delete user
 router.route("/deleteuser/:id").post(isAuthenticated, deleteuser);
-
-// google auth route
-// Google OAuth authentication route
-router.get(
-    "/auth/google",
-    passport.authenticate("google", { scope: ["profile", "email"] })
-  );
-  
-  // Google OAuth callback route
-
-  router.get(
-    "/auth/google/callback",
-    passport.authenticate("google", {
-      successRedirect: process.env.NODE_ENV === 'production' ? "https://crosstheskylimits.online/home" : "http://localhost:5173/home",
-      failureRedirect: process.env.NODE_ENV === 'production' ? "https://crosstheskylimits.online/login" : "http://localhost:5173/login",
-    })
-  );
 
 module.exports = router;
