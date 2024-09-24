@@ -1,4 +1,4 @@
-const { axios } = require("axios");
+const axios = require("axios");
 const { oauth2Client } = require("../utils/googleConfig");
 const userSchema = require("../models/user.schema");
 const { sendtoken } = require("../utils/sendtoken");
