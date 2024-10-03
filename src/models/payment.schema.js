@@ -8,7 +8,8 @@ const PaymentSchema = new mongoose.Schema({
     },
     paymentId: {
         type: String,
-        unique: true
+        unique: true,
+        sparse: true // Allow null values initially
     },
     signature: {
         type: String

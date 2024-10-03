@@ -4,7 +4,7 @@ let Payment = require("../models/payment.schema.js");
 const ErrorHandler = require("../utils/ErrorHandler.js");
 
 
-// create portfolio
+// create payment
 exports.createpayment = catchAsyncErrors(async (req, res, next) => {
     try {
         const portfolio = await Portfolio.findById(req.params.id);
@@ -14,7 +14,7 @@ exports.createpayment = catchAsyncErrors(async (req, res, next) => {
 
         const order = await portfolio.createOrder();
 
-        // Save initial payment details
+        // Save initial payment details without paymentId
         const payment = new Payment({
             orderId: order.id,
             portfolioId: portfolio._id,
@@ -23,15 +23,15 @@ exports.createpayment = catchAsyncErrors(async (req, res, next) => {
         });
         await payment.save();
 
-        console.log('order',order)
+        console.log('order', order);
         res.status(200).json(order);
     } catch (error) {
-        console.log('error create payment :',error)
+        console.log('error create payment :', error);
         res.status(500).json({ message: error.message });
     }
 });
 
-// verify portfolio
+// verify payment
 exports.verifypayment = catchAsyncErrors(async (req, res, next) => {
     try {
         const { order_id, payment_id, signature, portfolio_id } = req.body;
