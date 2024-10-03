@@ -1,5 +1,5 @@
 {
-  "name": "cts-roadmap-two",
+  "name": "cts-roadmap",
   "version": "1.0.0",
   "description": "this is crosstheskylimits official website backend",
   "main": "src/app.js",
