@@ -10,7 +10,7 @@ require('./models/database.js').connectDatabase()
 // logger
 app.use(require('morgan')('tiny'));
 
-// corc integration
+// cors integration
 const cors = require("cors");
 
 app.use(

@@ -47,6 +47,12 @@ const essayediting = new mongoose.Schema({
     
 }, { timestamps: true });
 
+// Razorpay instance
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_API_KEY,
+    key_secret: process.env.RAZORPAY_APT_SECRET
+});
+
 // Method to verify payment
 essayediting.statics.verifyPayment = function(paymentDetails) {
     try {
