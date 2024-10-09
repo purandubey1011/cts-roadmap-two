@@ -18,5 +18,4 @@ router.route("/getkey").get((req, res) =>
     res.status(200).json({ key: process.env.RAZORPAY_API_KEY })
   ) 
   
-
 module.exports = router;

@@ -47,6 +47,20 @@ const essayediting = new mongoose.Schema({
     
 }, { timestamps: true });
 
+// Method to verify payment
+essayediting.statics.verifyPayment = function(paymentDetails) {
+    try {
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = paymentDetails;
+        const hmac = crypto.createHmac('sha256', razorpay.key_secret);
+        hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+        const generatedSignature = hmac.digest('hex');
+        return generatedSignature === razorpay_signature;
+    } catch (error) {
+        console.log("error verify payment :", error);
+        return false;
+    }
+};
+
 const essay = mongoose.model('essay', essayediting);
 
 module.exports = essay;

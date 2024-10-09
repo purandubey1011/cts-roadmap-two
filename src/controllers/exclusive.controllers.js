@@ -73,3 +73,54 @@ exports.submitessay = catchAsyncErrors(async (req, res, next) => {
         res.status(500).json({ message: error });
     }
 });
+
+// verify payment
+exports.essayverifypayment = catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+        req.body;
+      const paymentDetails = {
+        razorpay_order_id: razorpay_order_id,
+        razorpay_payment_id: razorpay_payment_id,
+        razorpay_signature: razorpay_signature,
+      };
+  
+      const isValid =await Essay.verifyPayment(paymentDetails);
+      if (isValid) {
+        // Update payment details
+        const payment = await Essay.findOne({ orderId: razorpay_order_id });
+  
+        if (!payment) {
+          return res.status(404).json({ message: "Payment record not found" });
+        }
+  
+        payment.paymentId = razorpay_payment_id;
+        payment.signature = razorpay_signature;
+        payment.status = "paid";
+  
+        await payment.save();
+        res.redirect(
+          `http://localhost:5173/portfolio/paymentsuccess/${razorpay_payment_id}`
+        );
+      } else {
+        // Update payment status to failed
+        const payment = await Essay.findOne({ orderId: razorpay_order_id });
+  
+        if (!payment) {
+          return res.status(404).json({ message: "Payment record not found" });
+        }
+  
+        payment.status = "failed";
+        await payment.save();
+  
+        res.status(400).json({
+          message: "Invalid payment signature",
+          status: payment.status,
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error verifying payment: " + error.message });
+    }
+  });
