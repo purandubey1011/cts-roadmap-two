@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Razorpay = require('razorpay');
+const crypto = require('crypto');
 
 const essayediting = new mongoose.Schema({
     essaytype: {
