@@ -59,7 +59,7 @@ PortfolioSchema.methods.createOrder = async function() {
 };
 
 // Method to verify payment
-PortfolioSchema.methods.verifyPayment = function(paymentDetails) {
+PortfolioSchema.statics.verifyPayment = function(paymentDetails) {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = paymentDetails;
     const hmac = crypto.createHmac('sha256', razorpay.key_secret);
     hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
