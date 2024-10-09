@@ -67,11 +67,7 @@ exports.submitessay = catchAsyncErrors(async (req, res, next) => {
     });
     await payment.save();
 
-    res.status(200).json({
-      success: true,
-      orderId: order.id,
-      message: "Essay submitted successfully",
-    });
+    res.status(200).json(order);
   } catch (error) {
     res.status(500).json({ message: error });
   }
@@ -82,6 +78,7 @@ exports.essayverifypayment = catchAsyncErrors(async (req, res, next) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
+      console.log('pay details :',req.body)
     const paymentDetails = {
       razorpay_order_id: razorpay_order_id,
       razorpay_payment_id: razorpay_payment_id,
