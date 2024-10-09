@@ -4,6 +4,7 @@ const Essay = require("../models/exclusive-services/eassy.editing.schema.js");
 const ErrorHandler = require("../utils/ErrorHandler.js");
 const User = require("../models/user.schema.js");
 const ImageKit = require("../utils/imagekit.js").initImageKit();
+const nodemailer = require("nodemailer");
 
 // Initialize Razorpay instance
 const razorpay = new Razorpay({
